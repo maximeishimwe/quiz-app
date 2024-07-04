@@ -1,2 +1,4 @@
-<app-navbar></app-navbar>
-<router-outlet />
+<main class="h-full p-20 bg-no-repeat bg-cover font-rubik" [ngClass]="{'bg-lightGrey bg-light': theme() === 'light', 'bg-darkNavy bg-dark': theme() === 'dark'}">
+  <app-navbar></app-navbar>
+  <router-outlet />
+</main>
