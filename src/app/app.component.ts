@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { ThemeService } from './services/theme.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +7,4 @@ import { ThemeService } from './services/theme.service';
 })
 export class AppComponent {
   title = 'quiz-app';
-  theme = inject(ThemeService).getTheme()
 }

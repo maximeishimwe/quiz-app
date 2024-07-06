@@ -1,1 +1,10 @@
-<p>home works!</p>
+<main
+  class="h-screen p-12 bg-no-repeat bg-cover font-rubik"
+  [ngClass]="{
+    'bg-lightGrey bg-light': theme() === 'light',
+    'bg-darkNavy bg-dark': theme() === 'dark'
+  }"
+>
+  <app-navbar></app-navbar>
+  <app-questions-answers></app-questions-answers>
+</main>
