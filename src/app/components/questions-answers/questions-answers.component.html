@@ -1,0 +1,198 @@
+<section
+  class="container p-4 mx-auto"
+  [class.text-darkNavy]="theme === 'light'"
+  *ngIf="!quizDataService.isQuizFinished()()"
+>
+  <div
+    *ngIf="!currentQuestion.question"
+    class="grid w-full grid-cols-2 gap-4 text-center md:flex md:flex-col md:items-center md:justify-center md:flex-1"
+  >
+    <div
+      class="text-left md:w-full md:tracking-wide"
+      [class.text-white]="theme === 'dark'"
+    >
+      <h2 class="mb-4 text-6xl md:text-3xl">
+        Welcome to the <br /><strong class="font-bold">Frontend Quiz!</strong>
+      </h2>
+      <p class="italic text-gray-500">Pick a subject to get started.</p>
+    </div>
+    <div
+      class="grid self-center grid-cols-1 gap-4 text-darkNavy md:flex md:flex-col md:items-center md:justify-center md:w-full"
+    >
+      <div
+        *ngFor="let quiz of quizzes; let id = index; trackBy: trackByQuizTitle"
+        class="flex items-center p-4 transition-all duration-300 bg-gray-100 border border-transparent rounded-lg shadow-md cursor-pointer md:w-full hover:border-purple"
+        (click)="startQuiz(id)"
+      >
+        <img
+          [src]="quiz.icon"
+          [alt]="quiz.title"
+          class="w-16 h-16 bg-gray-200 rounded-full"
+        />
+        <p class="ml-4">{{ quiz.title }}</p>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="currentQuestion.question"
+    class="grid w-full grid-cols-2 gap-4 text-center md:flex md:flex-col md:items-center md:justify-center"
+  >
+    <div
+      class="text-left md:w-full md:tracking-wide"
+      [class.text-white]="theme === 'dark'"
+    >
+      <h2
+        class="mb-4 text-xl italic text-gray-500"
+        [class.text-white]="theme === 'dark'"
+      >
+        Question {{ quizDataService.getCurrentStep()() + 1 }} of
+        {{ currentQuiz().questions.length }}
+      </h2>
+      <p
+        class="text-4xl font-bold md:text-3xl text-darkNavy"
+        [class.text-lightGrey]="theme === 'dark'"
+      >
+        {{ currentQuestion.question }}
+      </p>
+    </div>
+    <div
+      class="grid grid-cols-1 gap-4 md:w-full md:flex md:flex-col md:items-center md:justify-center"
+    >
+      <div
+        *ngFor="let option of currentQuestion.options; let id = index"
+        class="flex items-center p-4 transition-all duration-300 border rounded-lg cursor-pointer md:text-lg justify-left hover:border-purple md:w-full"
+        [class.border-purple]="answerSelected() === id && !answerSubmitted"
+        [class.border-red]="
+          answerSubmitted &&
+          getAnswerVariant(answerSelected()) === 'incorrect' &&
+          answerSelected() === id
+        "
+        [class.border-green]="
+          answerSubmitted &&
+          getAnswerVariant(answerSelected()) === 'correct' &&
+          answerSelected() === id
+        "
+        (click)="onClickAnswer(id)"
+      >
+        <div
+          class="flex items-center justify-center w-8 h-8 mr-4 text-lg font-bold rounded-md hover:!bg-[#F6E7FF] hover:!text-purple"
+          [class.bg-purple]="answerSelected() === id && !answerSubmitted"
+          [class.text-white]="answerSelected() === id"
+          [class.text-darkNavy]="theme === 'dark'"
+          [class.bg-lightGrey]="answerSelected() !== id"
+          [class.bg-red]="
+            answerSubmitted &&
+            getAnswerVariant(answerSelected()) === 'incorrect' &&
+            answerSelected() === id
+          "
+          [class.bg-green]="
+            answerSubmitted &&
+            getAnswerVariant(answerSelected()) === 'correct' &&
+            answerSelected() === id
+          "
+        >
+          {{ responses[id] }}
+        </div>
+        <div class="text-lg md:text-sm md:mr-4">{{ option }}</div>
+        <div class="ml-auto md:pl-6">
+          <img
+            src="assets/images/checkmark.svg"
+            [hidden]="
+              !answerSubmitted ||
+              answerSelected() !== id ||
+              getAnswerVariant(answerSelected()) === 'incorrect'
+            "
+            [class.block]="
+              answerSubmitted && getAnswerVariant(id) === 'correct'
+            "
+          />
+          <img
+            src="assets/images/close.svg"
+            [hidden]="
+              !answerSubmitted ||
+              answerSelected() !== id ||
+              getAnswerVariant(answerSelected()) === 'incorrect'
+            "
+            [class.block]="
+              answerSubmitted && getAnswerVariant(id) === 'incorrect'
+            "
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="w-[80%] self-center bg-darkNavy rounded-full h-2.5 dark:bg-white"
+    >
+      <div
+        class="bg-purple h-2.5 rounded-full"
+        [style.width]="getProgressBarWidth() + '%'"
+      ></div>
+    </div>
+
+    <div class="w-full mt-4">
+      <button
+        (click)="
+          answerSelected() !== -1 ? submitAnswer() : setShowErrorMessage(true)
+        "
+        class="w-full p-8 text-lg text-white transition-all duration-300 rounded-lg shadow-md cursor-pointer md:py-4 bg-purple hover:bg-purpleLight"
+        [disabled]="answerSubmitted"
+        [hidden]="answerSubmitted"
+      >
+        Submit Answer
+      </button>
+      <button
+        (click)="nextQuestion()"
+        class="w-full p-8 text-lg text-white transition-all duration-300 rounded-lg shadow-md cursor-pointer md:py-4 bg-purple hover:bg-purpleLight"
+        [disabled]="!answerSubmitted"
+        [hidden]="!answerSubmitted"
+      >
+        Next Question
+      </button>
+    </div>
+  </div>
+  @if (showErrorMessage()) {
+  <div class="flex items-center justify-center gap-4 text-red">
+    <img src="../../assets/images/close.svg" />
+    <div>Please select an answer</div>
+  </div>
+  }
+</section>
+<section
+  class="grid w-full grid-cols-2 gap-4 text-center md:flex md:flex-col md:items-center md:justify-center md:flex-1"
+  *ngIf="quizDataService.isQuizFinished()()"
+>
+  <div
+    class="text-left text-darkNavy md:w-full md:tracking-wide md:text-left md:flex md:flex-col"
+    [class.text-white]="theme === 'dark'"
+  >
+    <h3 class="font-light text-[3.5em] md:text-[2em]">Quiz completed!</h3>
+    <p class="text-[3.5em] md:text-[2em] font-bold">You scored...</p>
+  </div>
+
+  <div
+    class="p-8 py-12 border border-gray-300 text-darkNavy md:w-full rounded-xl"
+  >
+    <div>
+      <div
+        class="flex items-center justify-center gap-4 mb-8 transition-all duration-300 cursor-pointer"
+        [class.text-white]="theme === 'dark'"
+      >
+        <img
+          [src]="currentQuiz().icon"
+          [alt]="currentQuiz().title"
+          class="w-16 h-16 bg-gray-200 rounded-full"
+        />
+        <p class="ml-4">{{ currentQuiz().title }}</p>
+      </div>
+      <div class="text-9xl md:text-6xl">{{ getCorrectAnswerCount() }}</div>
+      <div>out of {{ currentQuiz().questions.length }}</div>
+    </div>
+  </div>
+  <div></div>
+  <button
+    (click)="restartQuiz()"
+    class="w-full p-8 text-lg text-white transition-all duration-300 rounded-lg shadow-md cursor-pointer md:py-4 bg-purple hover:bg-purpleLight"
+  >
+    Play Again
+  </button>
+</section>

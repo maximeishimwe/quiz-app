@@ -1,1 +1,19 @@
-<p>navbar works!</p>
+<div
+  class="flex items-center justify-end w-full mb-8"
+  [class.justify-between]="currentQuestion.question"
+>
+  <div
+    class="items-center justify-between transition-all duration-300 cursor-pointer"
+    [class.flex]="currentQuestion.question"
+    [hidden]="!currentQuestion.question"
+    [class.text-white]="theme === 'dark'"
+  >
+    <img
+      [src]="currentQuiz().icon"
+      [alt]="currentQuiz().title"
+      class="w-16 h-16 bg-gray-200 rounded-full"
+    />
+    <p class="ml-4">{{ currentQuiz().title }}</p>
+  </div>
+  <app-theme-switcher (clickButton)="onSwitch()" />
+</div>

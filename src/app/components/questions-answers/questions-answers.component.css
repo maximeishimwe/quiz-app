@@ -1,0 +1,15 @@
+progress::-webkit-progress-value {
+  background-color: #a100ff;
+}
+progress::-moz-progress-bar {
+  background-color: #a100ff;
+}
+progress::-ms-fill {
+  background-color: #a100ff;
+}
+
+/* make progress bar rounded */
+progress::-webkit-progress-bar {
+    border-radius: 1em;
+    background-color: rgb(215, 222, 228);
+}
