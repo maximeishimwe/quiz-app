@@ -30,20 +30,16 @@ export class QuestionsAnswersComponent {
 
   @Input() theme: string = 'light';
 
-  constructor(private injector: Injector) {
-    runInInjectionContext(this.injector, () => {
-      effect(() => {
-        this.currentQuestion = this.currentQuiz().questions
-          ? this.currentQuiz().questions[
-              this.quizDataService.getCurrentStep()()
-            ]
-          : ({} as Question);
-        this.correctAnswer = this.currentQuestion.options?.indexOf(
-          this.currentQuestion.answer
-        );
+  constructor() {
+    effect(() => {
+      this.currentQuestion = this.currentQuiz().questions
+        ? this.currentQuiz().questions[this.quizDataService.getCurrentStep()()]
+        : ({} as Question);
+      this.correctAnswer = this.currentQuestion.options?.indexOf(
+        this.currentQuestion.answer
+      );
 
-        console.log('### correct answer is', this.correctAnswer);
-      });
+      console.log('### correct answer is', this.correctAnswer);
     });
   }
 
