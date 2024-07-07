@@ -7,7 +7,7 @@
     "paths": {
       "@/*": ["./src/app/*"]
     },
-    "strict": false,
+    "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
@@ -27,7 +27,7 @@
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": false,
-    "strictInputAccessModifiers": false,
-    "strictTemplates": false
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

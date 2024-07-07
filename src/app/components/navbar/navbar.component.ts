@@ -1,12 +1,5 @@
 import { ThemeService } from '@/services/theme.service';
-import {
-  Component,
-  effect,
-  inject,
-  Injector,
-  runInInjectionContext,
-  Input,
-} from '@angular/core';
+import { Component, effect, inject, Input } from '@angular/core';
 import { QuizDataService } from '@/services/quiz-data.service';
 import { Question } from '@/models/question';
 

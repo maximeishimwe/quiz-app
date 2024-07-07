@@ -95,7 +95,12 @@
         </div>
         <div class="text-lg md:text-sm md:mr-4">{{ option }}</div>
         <div class="ml-auto md:pl-6">
-          <img
+          @if (answerSubmitted && getAnswerVariant(id) === 'correct') {
+          <img src="assets/images/checkmark.svg" />
+          } @else if (answerSubmitted && getAnswerVariant(id) === 'incorrect') {
+          <img src="assets/images/close.svg" />
+          }
+          <!-- <img
             src="assets/images/checkmark.svg"
             [hidden]="
               !answerSubmitted ||
@@ -116,7 +121,7 @@
             [class.block]="
               answerSubmitted && getAnswerVariant(id) === 'incorrect'
             "
-          />
+          /> -->
         </div>
       </div>
     </div>
