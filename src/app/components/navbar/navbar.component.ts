@@ -25,15 +25,11 @@ export class NavbarComponent {
 
   @Input() theme: string = 'light';
 
-  constructor(private injector: Injector) {
-    runInInjectionContext(this.injector, () => {
-      effect(() => {
-        this.currentQuestion = this.currentQuiz().questions
-          ? this.currentQuiz().questions[
-              this.quizDataService.getCurrentStep()()
-            ]
-          : ({} as Question);
-      });
+  constructor() {
+    effect(() => {
+      this.currentQuestion = this.currentQuiz().questions
+        ? this.currentQuiz().questions[this.quizDataService.getCurrentStep()()]
+        : ({} as Question);
     });
   }
 
