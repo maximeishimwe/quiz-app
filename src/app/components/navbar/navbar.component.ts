@@ -1,5 +1,14 @@
 import { ThemeService } from '@/services/theme.service';
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  Injector,
+  runInInjectionContext,
+  Input,
+} from '@angular/core';
+import { QuizDataService } from '@/services/quiz-data.service';
+import { Question } from '@/models/question';
 
 @Component({
   selector: 'app-navbar',
@@ -8,8 +17,27 @@ import { Component, inject } from '@angular/core';
 })
 export class NavbarComponent {
   themeService = inject(ThemeService);
+  quizDataService = inject(QuizDataService);
 
-  protected onSwitch(): void {
+  currentQuiz = this.quizDataService.getCurrentQuizInstance();
+
+  currentQuestion: Question = {} as Question;
+
+  @Input() theme: string = 'light';
+
+  constructor(private injector: Injector) {
+    runInInjectionContext(this.injector, () => {
+      effect(() => {
+        this.currentQuestion = this.currentQuiz().questions
+          ? this.currentQuiz().questions[
+              this.quizDataService.getCurrentStep()()
+            ]
+          : ({} as Question);
+      });
+    });
+  }
+
+  onSwitch(): void {
     this.themeService.changeTheme();
   }
 }

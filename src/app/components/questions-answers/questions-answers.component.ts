@@ -5,6 +5,7 @@ import {
   signal,
   runInInjectionContext,
   Injector,
+  Input,
 } from '@angular/core';
 import { QuizDataService } from '@/services/quiz-data.service';
 import { Question, Quiz } from '@/models/question';
@@ -25,6 +26,9 @@ export class QuestionsAnswersComponent {
   responses = ['A', 'B', 'C', 'D'];
   currentQuestion: Question = {} as Question;
   answerSelected = signal(-1);
+  showErrorMessage = signal(false);
+
+  @Input() theme: string = 'light';
 
   constructor(private injector: Injector) {
     runInInjectionContext(this.injector, () => {
@@ -37,6 +41,8 @@ export class QuestionsAnswersComponent {
         this.correctAnswer = this.currentQuestion.options?.indexOf(
           this.currentQuestion.answer
         );
+
+        console.log('### correct answer is', this.correctAnswer);
       });
     });
   }
@@ -58,6 +64,7 @@ export class QuestionsAnswersComponent {
   }
 
   submitAnswer(): void {
+    this.setShowErrorMessage(false);
     this.answerSubmitted = true;
     if (this.correctAnswer === this.answerSelected()) {
       this.totalCorrect++;
@@ -65,18 +72,14 @@ export class QuestionsAnswersComponent {
   }
 
   getAnswerVariant(index: number): 'none' | 'correct' | 'incorrect' {
-    let variant: 'none' | 'correct' | 'incorrect' = 'none';
-    if (this.answerSubmitted && index === this.correctAnswer) {
-      variant = 'correct';
+    if (this.answerSubmitted) {
+      if (index === this.correctAnswer) {
+        return 'correct';
+      } else if (index === this.answerSelected()) {
+        return 'incorrect';
+      }
     }
-    if (
-      this.answerSubmitted &&
-      index !== this.correctAnswer &&
-      index === this.answerSelected()
-    ) {
-      variant = 'incorrect';
-    }
-    return variant;
+    return 'none';
   }
 
   onClickAnswer(index: number): void {
@@ -96,5 +99,16 @@ export class QuestionsAnswersComponent {
 
   trackByQuizTitle(index: number, quiz: Quiz): string {
     return quiz.title;
+  }
+
+  getProgressBarWidth(): number {
+    return (
+      (100 * this.quizDataService.getCurrentStep()()) /
+      this.currentQuiz().questions.length
+    );
+  }
+
+  setShowErrorMessage(show: boolean): void {
+    this.showErrorMessage.set(show);
   }
 }
